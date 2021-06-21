@@ -1,0 +1,140 @@
+{% load static %} {% static imgs as baseUrl %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="{% static 'imgs/TSF_logo.png' %}" />
+    <title>The Sparks Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+</head>
+
+<body>
+    <div class="site-page">
+        <header>
+
+            <!--Navigation Bar-->
+            <nav class="nav-bar">
+                <span id="navbar-toggle">
+                    <i class="fas fa-bars"></i>
+                </span>
+                <span class="brand">The Sparks Bank</span>
+                <ul class="nav-menu" id="js-nav-menu">
+                    <li>
+                        <a href="{% url 'home' %}" onClick="window.location.hash='#about_row'"
+                            class="nav-links">Home</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'home' %}" class="nav-links">About</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'home' %}" onClick="window.location.hash='#contact_row'"
+                            class="nav-links">Contact</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-links">Hi, Tharun G</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </header>
+        <!--List of features available-->
+        <div class="content" style="background-color: lightgrey">
+            <center>
+                <button class="btn btn-primary" onclick="show_cus()">
+                    View All Customers
+                </button>
+                <button class="btn btn-primary" onclick="show_trans()">
+                    View All Transactions
+                </button>
+                <button class="btn btn-primary" onclick="trans()">
+                    Transfer money
+                </button>
+            </center>
+            <!--List of customers-->
+            <div id="customers">
+                <table>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Balance</th>
+                    </tr>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>#{{customer.id}}</td>
+                        <td>{{customer.name}}</td>
+                        <td>Rs. {{customer.balance}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <!--Transaction History-->
+            <div id="transactions">
+                <table>
+                    <tr>
+                        <th>Sender</th>
+                        <th>Receiver</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date and Time</th>
+                    </tr>
+                    {% for trans in transfers %}
+                    <tr>
+                        <td>{{trans.sender}}</td>
+                        <td>{{trans.receiver}}</td>
+                        <td>Rs. {{trans.amount}}</td>
+                        <td>{{trans.status}}</td>
+                        <td>{{trans.datetime}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <!--Transferring money to others-->
+        <div id="transfer" class="text-center">
+            <form name="transaction" method="POST" action="/details/">
+                {% csrf_token %} 
+                {{ form }}
+                <button type="submit" class="btn btn-info">Transfer</button>
+            </form>
+        </div>
+        <!--Confirmation of Transaction-->
+        <div>
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == "success" %}
+            <script>
+                alert("Transaction Successful");
+            </script>
+            {% endif %}
+            {% if message.tags == "error" %}
+            <script>
+                alert("Low Balance! Transaction failed");
+            </script>
+            {% endif %}
+            {% if message.tags == "warning" %}
+            <script>
+                alert("Money cannot be transferred to the sender itself!");
+            </script>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <!--Footer(Copyrights)-->
+    <footer class="text-center" style="position: absolute; bottom: 0; left: 20%; right: 20%">
+        <i>
+            - Developed by Tharun G. Copyright &copy; 2021 The Sparks Foundation.
+            All rights reserved.
+        </i>
+    </footer>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/transfer.js' %}"></script>
+    <script src="https://kit.fontawesome.com/e93db831c1.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
